@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Auréa — Dental Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script type="importmap">
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.18/+esm" } }
+</script>
+<style>
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+img{display:block;max-width:100%}
+button{cursor:pointer;font:inherit;color:inherit;background:none;border:none}
+a{color:inherit;text-decoration:none}
+input{font:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ===== ADAPTIVE REM GRID ===== */
+html{font-size:16px}
+@media (max-width:1920px){html{font-size:0.833333vw}}
+@media (max-width:1440px){html{font-size:1.111111vw}}
+@media (max-width:1024px){html{font-size:1.5625vw}}
+@media (max-width:640px){html{font-size:4.444444vw}}
+html.scroll-locked{position:relative;overflow:hidden;height:100%}
+
+/* ===== TOKENS ===== */
+:root{
+  --bg:#eef1f6;
+  --ink:#191919;
+  --ink-soft:#8b93a1;
+  --muted-head:#aabcd6;   /* two-tone heading second colour */
+  --blue:#a8c5e4;
+  --blue-soft:#c8d6e8;
+  --surface:#e6ebf1;
+  --card:#ffffff;
+  --hairline:#dde3ea;
+  --dark:#191919;
+  --on-dark:#ffffff;
+  --r-card:1.75rem;
+  --r-lg:2.25rem;
+  --r-pill:62.5rem;
+  --r-sm:1rem;
+}
+body{min-height:100vh;background:var(--bg);color:var(--ink);
+  font-family:"Urbanist",system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+main{width:100%;overflow-x:clip;padding:.5rem}
+@media (min-width:640px){main{padding:.75rem}}
+section{position:relative}
+
+/* ===== TYPO HELPERS ===== */
+.display{font-weight:500;line-height:.92;letter-spacing:-0.035em}
+.muted{color:var(--muted-head)}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.16em}
+.eyebrow .dot{width:.4rem;height:.4rem;border-radius:var(--r-pill);background:var(--blue);flex:none}
+.eyebrow.on-dark{color:rgba(255,255,255,.7)} .eyebrow.on-dark .dot{background:var(--blue)}
+.clip-box{display:block;overflow:hidden}
+.clip-inner{display:block;transform:translateY(115%);opacity:0}
+
+/* ===== BUTTONS ===== */
+.pill{display:inline-flex;align-items:center;gap:.6rem;border-radius:var(--r-pill);
+  padding:1rem 1.9rem;font-size:.9rem;font-weight:600;letter-spacing:.01em;transition:background-color .3s,color .3s}
+.pill svg{width:1rem;height:1rem}
+.pill.dark{background:var(--dark);color:#fff} .pill.dark:hover{background:#000}
+.pill.light{background:#fff;color:var(--ink);font-size:1.15rem} .pill.light:hover{background:var(--blue);color:var(--ink)}
+.pill.blue{background:var(--blue);color:var(--ink)} .pill.blue:hover{background:#fff}
+.round-btn{display:grid;place-items:center;width:3.2rem;height:3.2rem;border-radius:var(--r-pill);
+  border:1px solid var(--hairline);background:#fff;color:var(--ink);transition:background-color .3s,border-color .3s,color .3s}
+.round-btn:hover{background:var(--dark);border-color:var(--dark);color:#fff}
+.round-btn svg{width:1.2rem;height:1.2rem}
+.round-btn.dark{background:var(--dark);border-color:var(--dark);color:#fff} .round-btn.dark:hover{background:var(--blue);border-color:var(--blue);color:var(--ink)}
+
+/* ===== IMAGE BOXES ===== */
+.imgbox{position:relative;overflow:hidden;background:var(--surface)}
+.imgbox img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-half{aspect-ratio:3/4}
+.gal-half .lab{position:absolute;z-index:2}
+
+/* ===== PLACEHOLDER ===== */
+.ph{position:relative;overflow:hidden;background:
+  radial-gradient(120% 120% at 30% 20%, #eef3f9 0%, #dbe4ef 55%, #c9d6e6 100%);
+  display:grid;place-items:center}
+.ph::before{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
+  background-size:2.2rem 2.2rem;opacity:.35}
+.ph .ph-tag{position:relative;display:flex;flex-direction:column;align-items:center;gap:.5rem;color:#9db0c8}
+.ph .ph-tag svg{width:1.9rem;height:1.9rem;opacity:.7}
+.ph .ph-tag span{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+
+/* ===== HEADER ===== */
+.site-header{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:1rem;
+  padding:1.6rem 1.8rem;font-size:.85rem;margin:.5rem;border-radius:var(--r-pill);
+  transition:background-color .35s ease,backdrop-filter .35s ease,box-shadow .35s ease,padding .35s ease}
+@media (min-width:640px){.site-header{padding:1.6rem 2.4rem;margin:.75rem}}
+/* glass state once scrolled past the hero top — solid dark so white text stays readable over any section */
+.site-header.scrolled{background:rgba(25,25,25,.82);backdrop-filter:blur(16px);
+  box-shadow:0 .6rem 2rem rgba(15,22,34,.25);padding-top:1rem;padding-bottom:1rem}
+.site-header.scrolled .burger{border-color:rgba(255,255,255,.35)}
+.brand{display:flex;align-items:center;gap:.55rem;font-size:1.15rem;font-weight:600;letter-spacing:.02em}
+.brand svg{width:1.6rem;height:1.6rem;flex:none}
+.hd-nav{display:none;flex:1;justify-content:center;gap:2.2rem;font-size:1rem}
+@media (min-width:1024px){.hd-nav{display:flex}}
+.hd-nav a{color:#fff;opacity:.85;transition:opacity .25s}
+.hd-nav a:hover{opacity:1}
+.hd-right{display:flex;align-items:center;gap:1rem;margin-left:auto}
+.hd-phone{display:none}
+@media (min-width:768px){.hd-phone{display:inline-block}}
+.burger{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.28rem;width:3rem;height:3rem;border-radius:var(--r-pill);
+  border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);backdrop-filter:blur(6px);transition:background-color .25s}
+.burger:hover{background:rgba(255,255,255,.3)}
+.burger span{display:block;width:1.1rem;height:.12rem;background:#fff;border-radius:2px}
+@media (min-width:1024px){.burger{display:none}}
+.hd-phone{font-size:1.15rem;font-weight:500;letter-spacing:.01em;color:#fff}
+.site-header .brand{color:#fff}
+
+/* ===== HERO ===== */
+.hero{border-radius:var(--r-lg);overflow:hidden;position:relative;isolation:isolate;
+  background:#8f9aa6;min-height:calc(100svh - 1rem);display:flex;flex-direction:column}
+@media (min-width:640px){.hero{min-height:calc(100svh - 1.5rem)}}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.hero-overlay{position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(22,30,42,.34) 0%,rgba(22,30,42,.14) 42%,rgba(22,30,42,.60) 100%)}
+.hero-stage{flex:1;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;gap:1.2rem;padding:1.6rem 1.8rem 2rem}
+@media (min-width:1024px){
+  .hero-stage{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:1fr auto;align-items:end;padding:2rem 2.6rem 2.6rem;gap:1.6rem;column-gap:2rem}
+}
+.hero-word{color:#fff}
+.hero-word h1{font-size:clamp(3.6rem,17vw,20rem);line-height:.8;letter-spacing:-0.045em}
+.hero-word h1 .sub{display:block;font-size:.2em;font-weight:500;letter-spacing:.06em;color:rgba(255,255,255,.72);margin-top:-0.1em}
+@media (min-width:1024px){.hero-word{grid-column:1;grid-row:2}}
+.hero-para{color:rgba(255,255,255,.86);font-size:1.25rem;line-height:1.5;max-width:24rem}
+@media (min-width:1024px){.hero-para{grid-column:2;grid-row:2;align-self:end;justify-self:start;margin-bottom:0}}
+.hero-right{display:flex;flex-direction:column;gap:1.2rem;align-items:flex-start}
+@media (min-width:1024px){.hero-right{grid-column:3;grid-row:1 / span 2;align-items:flex-end;justify-content:flex-end}}
+.hero-cta.pill{font-size:1.15rem;padding:1.5rem 3rem;align-self:flex-start}
+@media (min-width:1024px){.hero-cta{align-self:flex-end}}
+.hero-stats{display:flex;flex-direction:column;align-items:stretch;gap:.8rem;color:#fff}
+.hs-block{display:flex;flex-direction:column;border-radius:var(--r-card);padding:1.4rem 1.8rem;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.30);backdrop-filter:blur(16px);
+  box-shadow:0 1rem 2.5rem rgba(15,22,34,.25)}
+.hs-v{font-size:5rem;font-weight:600;line-height:1;letter-spacing:-0.02em}
+.hs-l{font-size:1.25rem;font-weight:500;opacity:.82;margin-top:.4rem;line-height:1.25}
+@media (max-width:640px){.hs-v{font-size:1.6rem}}
+
+/* ===== SECTION FRAME ===== */
+.band{border-radius:var(--r-lg);margin-top:.75rem;padding:5rem 1.8rem}
+@media (min-width:640px){.band{padding:6rem 2.6rem}}
+.band.dark{background:var(--dark);color:var(--on-dark)}
+.band.plain{background:transparent;padding-left:1.8rem;padding-right:1.8rem}
+@media (min-width:640px){.band.plain{padding-left:2.6rem;padding-right:2.6rem}}
+.sec-head h2{font-size:clamp(2.4rem,5.5vw,4.4rem)}
+#gallery>h2,#reviews>h2{font-size:clamp(2.4rem,5.5vw,4.4rem)}
+
+/* ===== PHILOSOPHY + STATS ===== */
+.phil-grid{display:grid;grid-template-columns:1fr;gap:2.5rem;align-items:center;margin-top:1rem}
+@media (min-width:900px){.phil-grid{grid-template-columns:1fr 1fr}}
+.phil-copy h2{font-size:clamp(2.4rem,5.2vw,5.2rem);margin-bottom:1.5rem}
+.phil-copy .body{font-size:1.15rem;line-height:1.65;color:var(--ink-soft);max-width:26rem;margin-bottom:1.6rem}
+.phil-img{aspect-ratio:5/4;border-radius:var(--r-card);overflow:hidden}
+.stats{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:2.5rem}
+@media (min-width:700px){.stats{grid-template-columns:repeat(3,1fr)}}
+.stat{border-radius:var(--r-card);background:var(--surface);padding:2rem 1.8rem;min-height:12rem;display:flex;flex-direction:column;justify-content:space-between}
+.stat.accent{background:var(--blue)}
+.stat .v{font-size:clamp(2.6rem,5vw,3.8rem);font-weight:500;letter-spacing:-0.03em;color:var(--ink)}
+.stat .l b{display:block;font-weight:600;font-size:1.25rem;margin-bottom:.2rem}
+.stat .l span{font-size:1.15rem;color:var(--ink-soft);line-height:1.4}
+.stat.accent .l span{color:#3c4a5c}
+
+/* ===== TREATMENTS (STACKING) ===== */
+.stack-head{margin-bottom:2.5rem}
+.stack-head h2{font-size:clamp(2.4rem,5.5vw,4.4rem)}
+.stack{position:relative}
+.stack-card{position:sticky;border-radius:var(--r-lg);overflow:hidden;background:var(--surface);
+  display:grid;grid-template-columns:1fr;min-height:26rem;will-change:transform;transform-origin:center top}
+@media (min-width:900px){.stack-card{grid-template-columns:1.1fr .9fr;min-height:34rem}}
+.stack-card + .stack-card{margin-top:1.2rem}
+.sc-body{padding:2.4rem 2rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem}
+@media (min-width:640px){.sc-body{padding:3rem 2.6rem}}
+.sc-num{font-size:clamp(3.5rem,7vw,5.5rem);font-weight:600;color:rgba(25,25,25,.08);letter-spacing:-0.04em;line-height:1}
+.sc-name{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:500;letter-spacing:-0.03em;margin-bottom:.6rem}
+.sc-desc{font-size:1.25rem;line-height:1.6;color:var(--ink-soft);max-width:26rem}
+.sc-cta{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.4rem;font-weight:600;font-size:1.25rem}
+.sc-cta svg{width:1rem;height:1rem;transition:transform .3s}
+.sc-cta:hover svg{transform:translateX(4px)}
+.sc-img{aspect-ratio:3/2;overflow:hidden}
+@media (min-width:900px){.sc-img{aspect-ratio:auto;height:100%}}
+.stack-card.tone-a{background:#e6ebf1}.stack-card.tone-b{background:#dfe7f0}
+.stack-card.tone-c{background:#e9edf2}.stack-card.tone-d{background:#dde6f0}.stack-card.tone-e{background:#e9edf2}
+
+/* ===== EXPERIENCE ===== */
+.exp-grid{display:grid;grid-template-columns:1fr;gap:2.5rem;align-items:center;margin-top:1rem}
+@media (min-width:900px){.exp-grid{grid-template-columns:1fr 1fr}}
+.exp-copy h2{font-size:clamp(2.4rem,5.2vw,4.2rem);margin-bottom:1.8rem}
+.exp-feats{display:flex;flex-direction:column;gap:1.4rem;margin-top:2rem}
+.exp-feat{display:flex;gap:1rem;align-items:flex-start;border-top:1px solid rgba(255,255,255,.14);padding-top:1.4rem}
+.exp-feat .fi{width:2.6rem;height:2.6rem;border-radius:var(--r-pill);background:rgba(255,255,255,.1);display:grid;place-items:center;flex:none}
+.exp-feat .fi svg{width:1.2rem;height:1.2rem;stroke:var(--blue)}
+.exp-feat b{display:block;font-weight:600;font-size:1.25rem;margin-bottom:.25rem}
+.exp-feat span{font-size:1.15rem;color:rgba(255,255,255,.6);line-height:1.5}
+.exp-img{aspect-ratio:4/5;border-radius:var(--r-lg)}
+
+/* ===== SPECIALISTS ===== */
+.spec-head{display:grid;grid-template-columns:1fr;gap:2rem;align-items:end}
+@media (min-width:900px){.spec-head{grid-template-columns:1.5fr auto}}
+.spec-head h2{font-size:clamp(2rem,4.4vw,3.6rem);font-weight:500;line-height:1.02;letter-spacing:-0.03em;max-width:43rem}
+.spec-ctrls{display:flex;gap:.6rem;justify-content:flex-end}
+.spec-row{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:3rem}
+@media (min-width:700px){.spec-row{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:1100px){.spec-row{grid-template-columns:repeat(5,1fr)}}
+.spec-card{border-radius:var(--r-card);overflow:hidden;background:var(--surface);position:relative;aspect-ratio:3/4;will-change:transform}
+.spec-card .spec-photo{position:absolute;inset:0}
+.spec-meta{position:absolute;left:.9rem;right:.9rem;bottom:.9rem;border-radius:var(--r-sm);
+  background:rgba(25,25,25,.42);backdrop-filter:blur(8px);color:#fff;padding:1.15rem 1.15rem}
+.spec-meta b{display:block;font-weight:600;font-size:1.25rem}
+.spec-meta span{font-size:1.15rem;opacity:.8}
+
+/* ===== SMILE GALLERY ===== */
+.gal-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:3rem}
+@media (min-width:700px){.gal-grid{grid-template-columns:repeat(2,1fr)}}
+.gal-card{border-radius:var(--r-card);overflow:hidden;background:var(--surface);will-change:transform}
+.gal-split{display:grid;grid-template-columns:1fr 1fr;gap:.12rem}
+.gal-split .ph{aspect-ratio:4/3}
+.gal-split .lab{position:absolute;top:.7rem;left:.7rem;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,255,255,.85);color:var(--ink);padding:.25rem .6rem;border-radius:var(--r-pill)}
+.gal-meta{padding:2.3rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.gal-meta b{font-weight:600;font-size:1.25rem}.gal-meta span{font-size:1.15rem;color:var(--ink-soft)}
+@media (max-width:640px){.gal-meta{flex-direction:column;align-items:flex-start;gap:.35rem}}
+
+/* ===== TESTIMONIALS ===== */
+.tst-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:3rem}
+@media (min-width:900px){.tst-grid{grid-template-columns:repeat(3,1fr)}}
+.tst-card{border-radius:var(--r-card);background:var(--surface);padding:2rem;display:flex;flex-direction:column;justify-content:space-between;min-height:18rem;will-change:transform}
+.tst-card .q{font-size:2.4rem;line-height:1;color:var(--blue);font-weight:600}
+.tst-card blockquote{font-size:1.25rem;line-height:1.6;margin-top:1rem}
+.tst-card figcaption{border-top:1px solid var(--hairline);padding-top:1rem;margin-top:1.6rem}
+.tst-card .n{font-weight:600;font-size:1.25rem}.tst-card .r{font-size:1.15rem;color:var(--ink-soft)}
+
+/* ===== FOOTER ===== */
+.foot{border-radius:var(--r-lg);margin-top:.75rem;background:var(--dark);color:#fff;padding:3rem 1.8rem}
+@media (min-width:640px){.foot{padding:4rem 2.6rem}}
+.foot-cta{display:grid;grid-template-columns:1fr;gap:2.5rem;align-items:center;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:3rem}
+@media (min-width:900px){.foot-cta{grid-template-columns:1fr 1fr}}
+.foot-cta .fc-img{aspect-ratio:16/10;border-radius:var(--r-card)}
+.foot-cta h2{font-size:clamp(2rem,4.4vw,3.4rem);font-weight:500;line-height:1.05;letter-spacing:-0.03em;margin-bottom:1.2rem}
+.foot-form{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.5rem;align-items:center}
+.foot-form input{flex:1;min-width:10rem;border:none;border-bottom:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;padding:.7rem .2rem;font-size:.9rem}
+.foot-form input::placeholder{color:rgba(255,255,255,.4)}
+.foot-form input:focus{outline:none;border-color:var(--blue)}
+.foot-word{font-size:19vw;font-weight:600;letter-spacing:-0.04em;line-height:.9;color:#fff;padding:2.5rem 0 1rem}
+.foot-cols{display:grid;grid-template-columns:1fr;gap:2rem;padding-bottom:2.5rem}
+@media (min-width:640px){.foot-cols{grid-template-columns:1.6fr 1fr 1fr}}
+.foot-cols .lead{max-width:22rem}
+.foot-cols .lead h3{font-size:1.8rem;font-weight:500;letter-spacing:-0.02em}
+.foot-cols .lead h3 .muted{color:var(--muted-head)}
+.foot-cols .lead .pill{margin-top:1.4rem}
+.foot-cols nav h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-bottom:1rem}
+.foot-cols nav a{display:block;color:rgba(255,255,255,.8);font-size:1.15rem;margin-bottom:.7rem;transition:color .2s}
+.foot-cols nav a:hover{color:#fff}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.14);padding-top:2rem;display:flex;flex-direction:column;gap:1rem;justify-content:space-between;font-size:.85rem;color:rgba(255,255,255,.55)}
+@media (min-width:640px){.foot-bottom{flex-direction:row;align-items:center}}
+
+/* ===== MENU OVERLAY ===== */
+.menu{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;pointer-events:none}
+.menu.open{pointer-events:auto}
+.menu-bg{position:absolute;inset:0;background:#fff;opacity:0}
+.menu-panel{position:relative;height:100%;display:flex;flex-direction:column;color:var(--ink);padding:2rem 1.8rem;opacity:0}
+@media (min-width:640px){.menu-panel{padding:2.4rem 2.6rem}}
+.menu-top{display:flex;justify-content:space-between;align-items:center}
+.menu-top .brand svg{color:var(--ink)}
+.menu-x{display:grid;place-items:center;width:3rem;height:3rem;border-radius:var(--r-pill);background:var(--surface);color:var(--ink)}
+.menu-x svg{width:1.3rem;height:1.3rem}
+.menu-nav{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1.4rem}
+.menu-nav a{font-size:1.25rem;font-weight:600;letter-spacing:.01em;color:var(--ink);transition:color .25s,opacity .25s;will-change:transform,opacity}
+.menu-nav a:hover{opacity:.55}
+.menu-bot{border-top:1px solid var(--hairline);padding-top:1.6rem;display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:space-between;align-items:center}
+.menu-social{display:flex;gap:1.2rem;color:var(--ink-soft);font-size:1rem}
+.menu-social a:hover{color:var(--ink)}
+
+/* ===== MODAL ===== */
+.modal{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;padding:.75rem;pointer-events:none}
+@media (min-width:640px){.modal{align-items:center;padding:1.5rem}}
+.modal.open{pointer-events:auto}
+.modal-bg{position:absolute;inset:0;background:rgba(25,25,25,.4);backdrop-filter:blur(6px);opacity:0}
+.modal-panel{position:relative;width:100%;max-width:32rem;max-height:92svh;overflow-y:auto;border-radius:var(--r-lg);
+  background:#fff;padding:2rem;box-shadow:0 2rem 5rem rgba(25,25,25,.3);opacity:0}
+.modal-panel h2{font-size:2.2rem;font-weight:500;letter-spacing:-0.03em;margin-top:.6rem}
+.modal-panel .close{position:absolute;top:1.4rem;right:1.4rem;width:2.6rem;height:2.6rem;border-radius:var(--r-pill);background:var(--surface);display:grid;place-items:center}
+.modal-panel .close svg{width:1.1rem;height:1.1rem}
+.mform{display:flex;flex-direction:column;gap:1rem;margin-top:1.6rem}
+.mform label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft);margin-bottom:.4rem;display:block}
+.mform input,.mform textarea{width:100%;border-radius:var(--r-sm);border:1px solid var(--hairline);background:var(--bg);padding:.8rem 1rem;font-size:.9rem;resize:vertical}
+.mform input:focus,.mform textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
+.mform button{border-radius:var(--r-pill);background:var(--dark);color:#fff;padding:.95rem 1.9rem;font-size:.9rem;font-weight:600;transition:background-color .3s}
+.mform button:hover{background:#000}
+.msuccess{margin-top:1.6rem;border-radius:var(--r-card);background:var(--surface);padding:1.8rem;text-align:center}
+.msuccess .ck{width:3rem;height:3rem;border-radius:var(--r-pill);background:var(--blue);display:grid;place-items:center;margin:0 auto 1rem}
+.msuccess .ck svg{width:1.3rem;height:1.3rem;stroke:var(--ink)}
+.msuccess h3{font-size:1.2rem;font-weight:600}
+.msuccess p{font-size:.9rem;color:var(--ink-soft);margin-top:.5rem}
+
+/* ===== LOADER ===== */
+.loader{position:fixed;inset:0;z-index:200;background:var(--dark);color:#fff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2rem;will-change:transform}
+.loader .lm{display:flex;align-items:center;gap:.6rem;font-size:1.6rem;font-weight:600;letter-spacing:.02em;opacity:0;will-change:transform,opacity}
+.loader .lm svg{width:2rem;height:2rem}
+.loader .lt{width:11rem;height:.1rem;background:rgba(255,255,255,.2);border-radius:var(--r-pill);overflow:hidden}
+.loader .lf{width:100%;height:100%;background:var(--blue);transform:scaleX(0);transform-origin:left}
+
+/* ===== MOBILE REFINEMENTS ===== */
+@media (max-width:640px){
+  /* 1 · tighter side padding on content sections */
+  #philosophy,#treatments,#specialists,#gallery,#reviews{padding-left:.8rem;padding-right:.8rem}
+  /* 2 · smaller top gap on these sections */
+  #treatments,#gallery,#reviews{padding-top:2.5rem}
+  /* 3 · one specialist card per row */
+  .spec-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SVG symbol: tooth mark -->
+<svg width="0" height="0" style="position:absolute"><symbol id="mark" viewBox="0 0 24 24"><path d="M12 3c-2.6 0-4 1.4-6 1.4C4.2 4.4 3 5.8 3 8.4c0 3 .8 4.6 1.6 7.4C5.2 20.4 5.8 22 7 22c1.4 0 1.4-2.4 2.6-2.4S10.6 22 12 22s1.2-2.4 2.4-2.4S15.6 22 17 22c1.2 0 1.8-1.6 2.4-6.2.8-2.8 1.6-4.4 1.6-7.4 0-2.6-1.2-4-3-4-2 0-3.4-1.4-6-1.4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="imgic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="9.5" r="1.6" fill="currentColor"/><path d="M4 17l4.5-4 3 2.5L15 11l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+</svg>
+
+<main>
+  <!-- ============ HEADER (fixed over page) ============ -->
+  <header class="site-header" id="site-header">
+    <div class="brand"><svg><use href="#mark"/></svg><span>Auréa</span></div>
+    <nav class="hd-nav">
+      <a href="#philosophy" data-scroll>About</a>
+      <a href="#treatments" data-scroll>Treatments</a>
+      <a href="#specialists" data-scroll>Specialists</a>
+      <a href="#contact" data-scroll>Contact</a>
+    </nav>
+    <div class="hd-right">
+      <a class="hd-phone" href="tel:+12125550148">+1 (212) 555 0148</a>
+      <button class="burger" aria-label="Menu" data-open-menu><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- ============ 1 · HERO ============ -->
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" src="https://deweb.studio/wp-content/uploads/2026/07/0_Woman_Blonde_1280x720.mp4"></video>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-stage">
+      <div class="hero-word"><h1 class="display" id="hero-title"></h1></div>
+      <p class="hero-para">Modern dental care that pairs advanced technology with a calm, unhurried approach — precision, comfort, and quiet luxury in every visit.</p>
+      <div class="hero-right">
+        <div class="hero-stats">
+          <div class="hs-block"><div class="hs-v">170+</div><div class="hs-l">restorations a year</div></div>
+          <div class="hs-block"><div class="hs-v">98%</div><div class="hs-l">patients by referral</div></div>
+        </div>
+        <button class="pill light hero-cta" data-open-modal>Book a Visit <svg><use href="#arr"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 · PHILOSOPHY + STATS ============ -->
+  <section class="band plain" id="philosophy">
+    <div class="phil-grid">
+      <div class="phil-copy">
+        <span class="eyebrow"><span class="dot"></span>Our philosophy</span>
+        <h2 class="display twotone" data-lines='["We believe true care","<span class=\"muted\">begins with trust</span>"]' style="margin-top:1.2rem"></h2>
+        <p class="body">At Auréa, exceptional care begins with time. Our specialists pair advanced technique with a calm, unhurried approach — so every appointment feels less like a clinic and more like a considered ritual.</p>
+        <button class="pill light" style="border:1px solid var(--hairline)" data-open-modal>Meet the studio <svg><use href="#arr"/></svg></button>
+      </div>
+      <div class="phil-img imgbox" data-inview-fade><img src="https://deweb.studio/wp-content/uploads/2026/07/photo-team.webp" alt="The Auréa dental team in the studio" loading="lazy" /></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat" data-inview><div class="v" data-count="300" data-suffix="+">300+</div><div class="l"><b>Smiles restored</b><span>Cosmetic and restorative cases completed with lasting results.</span></div></div>
+      <div class="stat accent" data-inview><div class="v" data-count="15" data-suffix="+">15+</div><div class="l"><b>Years of practice</b><span>A team of certified specialists refining a single standard.</span></div></div>
+      <div class="stat" data-inview><div class="v" data-count="100" data-suffix="%">100%</div><div class="l"><b>Considered care</b><span>Private, painless protocols built around each patient.</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ 3 · SIGNATURE TREATMENTS (STACKING) ============ -->
+  <section class="band plain" id="treatments">
+    <div class="stack-head">
+      <span class="eyebrow"><span class="dot"></span>Signature treatments</span>
+      <h2 class="display twotone" data-lines='["Care, from routine","to <span class=\"muted\">remarkable</span>"]' style="margin-top:1.2rem"></h2>
+    </div>
+    <div class="stack" id="stack"></div>
+  </section>
+
+  <!-- ============ 4 · THE AURÉA EXPERIENCE ============ -->
+  <section class="band dark" id="experience">
+    <div class="exp-grid">
+      <div class="exp-copy">
+        <span class="eyebrow on-dark"><span class="dot"></span>The Auréa experience</span>
+        <h2 class="display twotone" data-on-dark data-lines='["An experience","<span class=\"muted\">unlike any clinic</span>"]' style="margin-top:1.2rem"></h2>
+        <div class="exp-feats" id="exp-feats"></div>
+      </div>
+      <div class="exp-img imgbox" data-inview-fade><img src="https://deweb.studio/wp-content/uploads/2026/07/interior-stomatology-clinic-dentist-s-office-modern-equipment-instruments-treatment-dental-clinic-close-up-concept-stomatology-1.webp" alt="Interior of the Auréa clinic with modern equipment" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <!-- ============ 5 · SPECIALISTS ============ -->
+  <section class="band plain" id="specialists">
+    <div class="spec-head">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>The team</span>
+        <h2 class="display twotone" data-lines='["World-class care starts with","<span class=\"muted\">people you can trust.</span>"]' style="margin-top:1.2rem"></h2>
+      </div>
+      <div class="spec-ctrls">
+        <button class="round-btn" id="spec-prev" aria-label="Previous"><svg style="transform:scaleX(-1)"><use href="#arr"/></svg></button>
+        <button class="round-btn dark" id="spec-next" aria-label="Next"><svg><use href="#arr"/></svg></button>
+      </div>
+    </div>
+    <div class="spec-row" id="spec-row"></div>
+  </section>
+
+  <!-- ============ 6 · SMILE GALLERY ============ -->
+  <section class="band plain" id="gallery">
+    <span class="eyebrow"><span class="dot"></span>Results</span>
+    <h2 class="display twotone" data-lines='["The proof is in","<span class=\"muted\">the smile.</span>"]' style="margin-top:1.2rem"></h2>
+    <div class="gal-grid" id="gal-grid"></div>
+  </section>
+
+  <!-- ============ 7 · TESTIMONIALS ============ -->
+  <section class="band plain" id="reviews">
+    <span class="eyebrow"><span class="dot"></span>In their words</span>
+    <h2 class="display twotone" data-lines='["Loved by the","<span class=\"muted\">people we treat.</span>"]' style="margin-top:1.2rem"></h2>
+    <div class="tst-grid" id="tst-grid"></div>
+  </section>
+
+  <!-- ============ 8 · CONSULTATION + FOOTER ============ -->
+  <footer class="foot" id="contact">
+    <div class="foot-cta">
+      <div class="fc-img imgbox" data-inview-fade><img src="https://deweb.studio/wp-content/uploads/2026/07/portrait-pleased-smiling-woman-dentist-s-clinic-1-1.webp" alt="Smiling patient at the Auréa consultation room" loading="lazy" /></div>
+      <div>
+        <span class="eyebrow on-dark"><span class="dot"></span>Get started</span>
+        <h2 class="display twotone" data-on-dark data-lines='["From first visit to perfect","<span class=\"muted\">smile, we focus on comfort.</span>"]' style="margin-top:1rem"></h2>
+        <form class="foot-form" id="foot-form">
+          <input type="text" placeholder="Name" aria-label="Name" />
+          <input type="tel" placeholder="Phone number" aria-label="Phone" />
+          <button class="pill blue" type="submit">Consultation</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="foot-word">Auréa</div>
+
+    <div class="foot-cols">
+      <div class="lead">
+        <h3 class="display">Considered dentistry, <span class="muted">quietly perfected.</span></h3>
+        <button class="pill light" data-open-modal>Book a Visit <svg><use href="#arr"/></svg></button>
+      </div>
+      <nav><h4>Studio</h4>
+        <a href="#treatments" data-scroll>Treatments</a><a href="#experience" data-scroll>Experience</a>
+        <a href="#specialists" data-scroll>Specialists</a><a href="#gallery" data-scroll>Results</a>
+      </nav>
+      <nav><h4>Contact</h4>
+        <a href="mailto:hello@aurea.studio">hello@aurea.studio</a>
+        <a href="tel:+12125550148">+1 (212) 555 0148</a>
+        <a href="#">120 Court Lane, New York</a>
+        <a href="#">Mon–Sat · 9:00–19:00</a>
+      </nav>
+    </div>
+
+    <div class="foot-bottom">
+      <span>© 2026 Auréa Dental Studio. All rights reserved.</span>
+      <nav class="menu-social"><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">LinkedIn</a></nav>
+    </div>
+  </footer>
+</main>
+
+<!-- ============ MENU OVERLAY ============ -->
+<div class="menu" id="menu" aria-hidden="true">
+  <div class="menu-bg" id="menu-bg"></div>
+  <div class="menu-panel" id="menu-panel">
+    <div class="menu-top">
+      <div class="brand"><svg><use href="#mark"/></svg><span>Auréa</span></div>
+      <button class="menu-x" id="menu-close" aria-label="Close"><span class="iw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></button>
+    </div>
+    <nav class="menu-nav" id="menu-nav">
+      <a href="#philosophy" data-scroll>About</a>
+      <a href="#treatments" data-scroll>Treatments</a>
+      <a href="#specialists" data-scroll>Specialists</a>
+      <a href="#contact" data-scroll>Contact</a>
+    </nav>
+    <div class="menu-bot">
+      <button class="pill blue" id="menu-book">Book a Visit <svg><use href="#arr"/></svg></button>
+      <nav class="menu-social"><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">LinkedIn</a></nav>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-bg" id="modal-bg"></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Book a visit" id="modal-panel">
+    <button class="close" id="modal-close" aria-label="Close"><span class="iw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></button>
+    <span class="eyebrow"><span class="dot"></span>Book a visit</span>
+    <h2 class="display twotone" id="modal-title" data-lines='["Come see","<span class=\"muted\">the studio.</span>"]'></h2>
+    <div id="mform-wrap">
+      <form class="mform" id="mform" novalidate>
+        <div><label for="mn">Full name</label><input id="mn" type="text" placeholder="Alex Rivera" /></div>
+        <div><label for="me">Email</label><input id="me" type="email" placeholder="you@email.com" /></div>
+        <div><label for="mp">What brings you in?</label><textarea id="mp" rows="3" placeholder="I'd love a consultation about aligners…"></textarea></div>
+        <button type="submit" id="msub">Request a visit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader">
+  <div class="lm" id="loader-mark"><svg><use href="#mark"/></svg><span>Auréa</span></div>
+  <div class="lt"><div class="lf" id="loader-fill"></div></div>
+</div>
+
+<script type="module">
+import Lenis from 'lenis';
+
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = () => matchMedia('(max-width:768px)').matches;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const html=document.documentElement;
+
+/* ---- easings ---- */
+const easeOutExpo=t=>t===1?1:1-Math.pow(2,-10*t);
+const easeInOutCubic=t=>t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+
+/* ---- animation loop ---- */
+const animations=new Set();
+let lastT=performance.now();
+const lenis=new Lenis({smoothWheel:true});
+window.scrollTo(0,0);
+function frame(now){
+  const dt=Math.min((now-lastT)/1000,0.05); lastT=now;
+  lenis.raf(now);
+  updateStack();
+  animations.forEach(a=>{ if(a.update(dt,now)===false) animations.delete(a); });
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---- scroll lock ---- */
+let locks=0;
+function lock(){locks++;lenis.stop();html.classList.add('scroll-locked');}
+function unlock(){locks=Math.max(0,locks-1);if(!locks){lenis.start();html.classList.remove('scroll-locked');}}
+
+/* ---- spring ---- */
+function stepSpring(s,dt){const n=Math.max(1,Math.ceil(dt/(1/240))),sd=dt/n;
+  for(let i=0;i<n;i++){const f=-s.tension*(s.x-s.target)-s.friction*s.v;s.v+=f*sd;s.x+=s.v*sd;}}
+function animateSpring(cfg,from,to,apply,done){
+  if(REDUCED){apply(to);done&&done();return;}
+  const sp={};for(const k in from)sp[k]={x:from[k],v:0,target:to[k],tension:cfg.tension,friction:cfg.friction};
+  const a={update(dt){let set=true;const val={};
+    for(const k in sp){stepSpring(sp[k],dt);val[k]=sp[k].x;if(Math.abs(sp[k].x-sp[k].target)>0.0015||Math.abs(sp[k].v)>0.0015)set=false;}
+    apply(val);if(set){apply(to);done&&done();return false;}}};
+  apply(from);animations.add(a);return a;
+}
+function springSet(init,cfg,apply){
+  const sp={};for(const k in init)sp[k]={x:init[k],v:0,target:init[k],tension:cfg.tension,friction:cfg.friction};
+  let active=false;
+  const a={update(dt){let set=true;const val={};
+    for(const k in sp){stepSpring(sp[k],dt);val[k]=sp[k].x;if(Math.abs(sp[k].x-sp[k].target)>0.0015||Math.abs(sp[k].v)>0.0015)set=false;}
+    apply(val);if(set){active=false;return false;}}};
+  apply(init);
+  return {to(v){if(REDUCED){for(const k in v){sp[k].x=sp[k].target=v[k];}apply(v);return;}for(const k in v)sp[k].target=v[k];if(!active){active=true;animations.add(a);}}};
+}
+function tween({duration,delay=0,easing=(t=>t),update,done}){
+  if(REDUCED){update(1);done&&done();return;}
+  const start=performance.now()+delay;
+  const a={update(_d,now){if(now<start)return;let p=(now-start)/duration;
+    if(p>=1){update(1);done&&done();return false;}update(easing(p));}};
+  animations.add(a);return a;
+}
+
+/* ---- clip line reveal (HTML lines) ---- */
+function buildLines(el,lines){
+  el.innerHTML='';const inners=[];
+  lines.forEach(l=>{const box=document.createElement('span');box.className='clip-box';box.style.paddingBottom='0.12em';
+    const inner=document.createElement('span');inner.className='clip-inner';inner.innerHTML=l;
+    box.appendChild(inner);el.appendChild(box);inners.push(inner);});
+  return inners;
+}
+function playLines(inners,{baseDelay=0,stagger=110,duration=900}={}){
+  inners.forEach((inner,i)=>tween({duration,delay:baseDelay+i*stagger,easing:easeOutExpo,
+    update:p=>{inner.style.transform=`translateY(${115*(1-p)}%)`;inner.style.opacity=p;}}));
+}
+function inviewOnce(el,cb,th=0.2){let f=false;
+  const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting&&!f){f=true;io.disconnect();cb();}})},{threshold:th});
+  io.observe(el);}
+
+/* ---- two-tone stacked headings ---- */
+document.querySelectorAll('.twotone[data-lines]').forEach(el=>{
+  const lines=JSON.parse(el.dataset.lines);
+  const inners=buildLines(el,lines);
+  if(el.id==='modal-title') return; // fired on open
+  inviewOnce(el,()=>playLines(inners));
+});
+// hero title
+(function(){const inners=buildLines(document.getElementById('hero-title'),['Auréa','<span class="sub">dental studio</span>']);
+  window.__heroInners=inners;})();
+
+/* ---- inview springs ---- */
+function inview(el,from,to,cfg,apply,delay=0){
+  apply(from);let f=false;
+  const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting&&!f){f=true;io.disconnect();
+    setTimeout(()=>animateSpring(cfg,from,to,apply),delay);}})},{threshold:0.15});
+  io.observe(el);
+}
+document.querySelectorAll('[data-inview]').forEach((el,i)=>{
+  inview(el,{o:0,y:30},{o:1,y:0},{tension:180,friction:24},v=>{el.style.opacity=v.o;el.style.transform=`translateY(${v.y/16}rem)`;},(i%3)*90);
+});
+document.querySelectorAll('[data-inview-fade]').forEach(el=>{
+  inview(el,{o:0,y:24},{o:1,y:0},{tension:200,friction:26},v=>{el.style.opacity=v.o;el.style.transform=`translateY(${v.y/16}rem)`;});
+});
+
+/* ---- hover lift helper ---- */
+function hoverLift(el,amt=-8,cfg={tension:300,friction:22}){
+  if(isMobile())return;const s=springSet({y:0},cfg,v=>{el.style.transform=`translateY(${v.y/16}rem)`;});
+  el.addEventListener('pointerenter',()=>s.to({y:amt}));el.addEventListener('pointerleave',()=>s.to({y:0}));
+}
+
+/* ---- smooth anchors ---- */
+document.querySelectorAll('a[data-scroll]').forEach(a=>a.addEventListener('click',e=>{
+  const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();lenis.scrollTo(t);}}));
+
+/* =====================================================
+   TREATMENTS (stacking cards)
+===================================================== */
+const treatments=[
+  {n:'01',name:'Aesthetic Restoration',d:'Veneers, bonding, and natural-looking restorations designed around your face.',tone:'tone-a',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-restoration.webp',alt:'Patient smiling after an aesthetic restoration'},
+  {n:'02',name:'Dental Implants',d:'Permanent, precision-placed implants that look and feel entirely your own.',tone:'tone-b',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-implants.webp',alt:'Dental implant models with titanium posts'},
+  {n:'03',name:'Clear Aligners',d:'Discreet orthodontics with digitally planned movements from day one.',tone:'tone-c',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-aligners.webp',alt:'Clear aligner being fitted'},
+  {n:'04',name:'Teeth Whitening',d:'Controlled, enamel-safe whitening for a brighter, calibrated result.',tone:'tone-d',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-whitening.webp',alt:'Close-up of a bright, whitened smile'},
+  {n:'05',name:'Hygiene & Prevention',d:'Unhurried cleanings and preventive care that keep every smile ahead.',tone:'tone-e',src:'https://deweb.studio/wp-content/uploads/2026/07/%D1%84%D0%BE%D1%82%D0%BE-6-1.webp',alt:'Smile before and after hygiene treatment'},
+];
+const stack=document.getElementById('stack');
+treatments.forEach((t,i)=>{
+  const card=document.createElement('article');
+  card.className='stack-card '+t.tone;
+  card.style.top='calc(5rem + '+(i*0.9)+'rem)';
+  const dark = false;
+  card.innerHTML=`<div class="sc-body">
+      <div class="sc-num">${t.n}</div>
+      <div><h3 class="sc-name">${t.name}</h3><p class="sc-desc">${t.d}</p>
+      <a class="sc-cta" href="#contact" data-scroll>Learn more <svg><use href="#arr"/></svg></a></div>
+    </div>
+    <div class="sc-img imgbox"><img src="${t.src}" alt="${t.alt}" loading="lazy" /></div>`;
+  stack.appendChild(card);
+});
+const stackCards=[...document.querySelectorAll('.stack-card')];
+const siteHeader=document.getElementById('site-header');
+function updateStack(){
+  // header glass once we scroll past ~70% of the first viewport
+  if(siteHeader) siteHeader.classList.toggle('scrolled', window.scrollY>innerHeight*0.7);
+  for(let i=0;i<stackCards.length-1;i++){
+    const next=stackCards[i+1].getBoundingClientRect();
+    const stuckTop=parseFloat(getComputedStyle(stackCards[i]).top);
+    const t=clamp((innerHeight-next.top)/(innerHeight-stuckTop),0,1);
+    stackCards[i].style.transform=`scale(${1-t*0.05})`;
+    stackCards[i].style.filter=`brightness(${1-t*0.10})`;
+  }
+}
+
+/* =====================================================
+   EXPERIENCE features
+===================================================== */
+const feats=[
+  {t:'Private suites',d:'Your own room from consultation to treatment — no shared chairs, no rush.'},
+  {t:'Painless protocols',d:'Modern anaesthetics and sedation on request for a genuinely calm visit.'},
+  {t:'Digital smile design',d:'3D scanning and planning so you preview the result before we begin.'},
+  {t:'Calm by design',d:'Quiet interiors, coffee, and time — dentistry that feels like a studio.'},
+];
+const ef=document.getElementById('exp-feats');
+feats.forEach(f=>{const d=document.createElement('div');d.className='exp-feat';
+  d.innerHTML=`<div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div><b>${f.t}</b><span>${f.d}</span></div>`;ef.appendChild(d);
+  inview(d,{o:0,y:20},{o:1,y:0},{tension:190,friction:26},v=>{d.style.opacity=v.o;d.style.transform=`translateY(${v.y/16}rem)`;});});
+
+/* =====================================================
+   SPECIALISTS
+===================================================== */
+const specialists=[
+  {n:'Dr. Michael Reynolds',r:'Orthodontist',src:'https://deweb.studio/wp-content/uploads/2026/07/dentist-smiling-thei-clinic-1.webp'},
+  {n:'Dr. Emily Carter',r:'Chief Dental Surgeon',src:'https://deweb.studio/wp-content/uploads/2026/07/Frame-1.webp'},
+  {n:'Dr. Jonathan Brooks',r:'Implantologist',src:'https://deweb.studio/wp-content/uploads/2026/07/male-dentist-looking-camera-1.webp'},
+  {n:'Dr. Sarah Mitchell',r:'Pediatric Dentist',src:'https://deweb.studio/wp-content/uploads/2026/07/Frame-3.webp'},
+  {n:'Dr. Olivia Bennett',r:'Cosmetic Dentist',src:'https://deweb.studio/wp-content/uploads/2026/07/Frame-2.webp'},
+  {n:'Dr. Daniel Fox',r:'Endodontist',src:'https://deweb.studio/wp-content/uploads/2026/07/preparing-utensils-microneedling-procedure-1.webp'},
+];
+const specRow=document.getElementById('spec-row');
+let specStart=0;
+function renderSpecialists(){
+  specRow.innerHTML='';
+  const per=window.innerWidth<640?1:window.innerWidth<1100?3:5;
+  for(let k=0;k<per;k++){
+    const s=specialists[(specStart+k)%specialists.length];
+    const card=document.createElement('figure');card.className='spec-card';
+    card.innerHTML=`<div class="spec-photo imgbox"><img src="${s.src}" alt="${s.n}, ${s.r}" loading="lazy" /></div>
+      <figcaption class="spec-meta"><b>${s.n}</b><span>${s.r}</span></figcaption>`;
+    specRow.appendChild(card);
+    inview(card,{o:0,y:26},{o:1,y:0},{tension:180,friction:26},v=>{card.style.opacity=v.o;card.style.transform=`translateY(${v.y/16}rem)`;},k*80);
+  }
+}
+renderSpecialists();
+document.getElementById('spec-next').addEventListener('click',()=>{specStart=(specStart+1)%specialists.length;renderSpecialists();});
+document.getElementById('spec-prev').addEventListener('click',()=>{specStart=(specStart-1+specialists.length)%specialists.length;renderSpecialists();});
+let specRz;addEventListener('resize',()=>{clearTimeout(specRz);specRz=setTimeout(renderSpecialists,200);});
+
+/* =====================================================
+   SMILE GALLERY
+===================================================== */
+const gallery=[
+  {t:'Full smile makeover',s:'Veneers + whitening',b:'https://deweb.studio/wp-content/uploads/2026/07/Full-smile-makeover-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Full-smile-makeover-after.webp'},
+  {t:'Implant restoration',s:'Single-tooth implant',b:'https://deweb.studio/wp-content/uploads/2026/07/Implant-restoration-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Implant-restoration-after.webp'},
+  {t:'Alignment correction',s:'12-month aligners',b:'https://deweb.studio/wp-content/uploads/2026/07/Alignment-correction-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Alignment-correction-after.webp'},
+  {t:'Whitening result',s:'In-studio session',b:'https://deweb.studio/wp-content/uploads/2026/07/Whitening-result-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Whitening-result-after.webp'},
+];
+const gal=document.getElementById('gal-grid');
+gallery.forEach(g=>{const c=document.createElement('article');c.className='gal-card';
+  c.innerHTML=`<div class="gal-split">
+      <div class="gal-half imgbox${g.b?'':' ph'}"><span class="lab">Before</span>${g.b?`<img src="${g.b}" alt="${g.t} — before" loading="lazy" />`:'<span class="ph-tag"><svg><use href="#imgic"/></svg><span>Before photo</span></span>'}</div>
+      <div class="gal-half imgbox"><span class="lab">After</span><img src="${g.a}" alt="${g.t} — after" loading="lazy" /></div>
+    </div>
+    <div class="gal-meta"><b>${g.t}</b><span>${g.s}</span></div>`;
+  gal.appendChild(c);
+  inview(c,{o:0,y:34},{o:1,y:0},{tension:180,friction:26},v=>{c.style.opacity=v.o;c.style.transform=`translateY(${v.y/16}rem)`;});
+  hoverLift(c,-6);});
+
+/* =====================================================
+   TESTIMONIALS
+===================================================== */
+const reviews=[
+  {q:'I never thought a dental visit could feel calm. Auréa changed that entirely.',n:'Priya Anand',r:'Aligners patient'},
+  {q:'Precision you can feel and a team that treats you like the only patient in the building.',n:'Lukas Brenner',r:'Implant patient'},
+  {q:'My daughter went from anxious to asking when the next visit is. Remarkable.',n:'Dana Okafor',r:'Parent'},
+];
+const tst=document.getElementById('tst-grid');
+reviews.forEach((t,i)=>{const c=document.createElement('figure');c.className='tst-card';
+  c.innerHTML=`<div><div class="q">“</div><blockquote>${t.q}</blockquote></div>
+    <figcaption><div class="n">${t.n}</div><div class="r">${t.r}</div></figcaption>`;
+  tst.appendChild(c);
+  inview(c,{o:0,y:38},{o:1,y:0},{tension:180,friction:26},v=>{c.style.opacity=v.o;c.style.transform=`translateY(${v.y/16}rem)`;},i*100);
+  hoverLift(c,-8);});
+
+/* =====================================================
+   MENU
+===================================================== */
+const menu=document.getElementById('menu'),menuBg=document.getElementById('menu-bg'),menuPanel=document.getElementById('menu-panel');
+const menuLinks=[...document.querySelectorAll('#menu-nav a')];let menuOpen=false;
+function openMenu(){if(menuOpen)return;menuOpen=true;menu.classList.add('open');menu.setAttribute('aria-hidden','false');lock();
+  animateSpring({tension:260,friction:30},{o:0},{o:1},v=>menuBg.style.opacity=v.o);
+  animateSpring({tension:220,friction:28},{o:0,y:-24},{o:1,y:0},v=>{menuPanel.style.opacity=v.o;menuPanel.style.transform=`translateY(${v.y/16}rem)`;});
+  menuLinks.forEach((a,i)=>{a.style.opacity='0';setTimeout(()=>animateSpring({tension:200,friction:26},{o:0,y:28},{o:1,y:0},
+    v=>{a.style.opacity=v.o;a.style.transform=`translateY(${v.y/16}rem)`;}),120+i*70);});}
+function closeMenu(){if(!menuOpen)return;menuOpen=false;
+  animateSpring({tension:260,friction:30},{o:1},{o:0},v=>menuBg.style.opacity=v.o);
+  animateSpring({tension:220,friction:28},{o:1,y:0},{o:0,y:-24},v=>{menuPanel.style.opacity=v.o;menuPanel.style.transform=`translateY(${v.y/16}rem)`;},
+    ()=>{menu.classList.remove('open');menu.setAttribute('aria-hidden','true');});unlock();}
+document.querySelector('[data-open-menu]').addEventListener('click',openMenu);
+document.getElementById('menu-close').addEventListener('click',closeMenu);
+menuBg.addEventListener('click',closeMenu);
+menuLinks.forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));e.preventDefault();closeMenu();if(t)setTimeout(()=>lenis.scrollTo(t),60);}));
+document.getElementById('menu-book').addEventListener('click',()=>{closeMenu();setTimeout(openModal,140);});
+
+/* =====================================================
+   MODAL
+===================================================== */
+const modal=document.getElementById('modal'),modalBg=document.getElementById('modal-bg'),modalPanel=document.getElementById('modal-panel');
+const modalTitle=document.getElementById('modal-title');let modalOpen=false;
+function applyModal(v){modalPanel.style.opacity=v.o;modalPanel.style.transform=`translateY(${v.y/16}rem) scale(${v.s})`;}
+function openModal(){if(modalOpen)return;modalOpen=true;modal.classList.add('open');modal.setAttribute('aria-hidden','false');lock();
+  animateSpring({tension:240,friction:30},{o:0},{o:1},v=>modalBg.style.opacity=v.o);
+  animateSpring({tension:240,friction:26},{o:0,y:28,s:0.96},{o:1,y:0,s:1},applyModal);
+  const inners=buildLines(modalTitle,JSON.parse(modalTitle.dataset.lines));playLines(inners,{stagger:90,duration:800});
+  setTimeout(()=>document.getElementById('mn')?.focus(),140);}
+function closeModal(){if(!modalOpen)return;modalOpen=false;
+  animateSpring({tension:240,friction:30},{o:1},{o:0},v=>modalBg.style.opacity=v.o);
+  animateSpring({tension:240,friction:26},{o:1,y:0,s:1},{o:0,y:28,s:0.96},applyModal,()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true');});
+  unlock();setTimeout(resetForm,360);}
+function bindForm(){document.getElementById('mform').addEventListener('submit',e=>{e.preventDefault();
+  const btn=document.getElementById('msub');const first=(document.getElementById('mn').value.trim().split(' ')[0])||'there';
+  btn.disabled=true;btn.style.opacity=.6;btn.textContent='Sending…';
+  setTimeout(()=>{document.getElementById('mform-wrap').innerHTML=`<div class="msuccess">
+    <div class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+    <h3>Request received</h3><p>Thanks, ${first} — our team will be in touch to arrange your visit.</p>
+    <button class="pill dark" id="mdone" style="margin-top:1.2rem">Done</button></div>`;
+    document.getElementById('mdone').addEventListener('click',closeModal);},700);});}
+function resetForm(){document.getElementById('mform-wrap').innerHTML=`<form class="mform" id="mform" novalidate>
+  <div><label for="mn">Full name</label><input id="mn" type="text" placeholder="Alex Rivera" /></div>
+  <div><label for="me">Email</label><input id="me" type="email" placeholder="you@email.com" /></div>
+  <div><label for="mp">What brings you in?</label><textarea id="mp" rows="3" placeholder="I'd love a consultation about aligners…"></textarea></div>
+  <button type="submit" id="msub">Request a visit</button></form>`;bindForm();}
+bindForm();
+document.querySelectorAll('[data-open-modal]').forEach(b=>b.addEventListener('click',openModal));
+modalBg.addEventListener('click',closeModal);document.getElementById('modal-close').addEventListener('click',closeModal);
+document.getElementById('foot-form').addEventListener('submit',e=>{e.preventDefault();openModal();});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(modalOpen)closeModal();else if(menuOpen)closeMenu();}});
+
+
+/* =====================================================
+   ADAPTIVE FONT (scale-up above 1920)
+===================================================== */
+function adaptFont(){const FB=16,BW=1920,C=0.6666;const red=((BW-innerWidth)/BW)*100*C;const s=FB-(FB*red)/100;
+  if(s>FB)html.style.fontSize=s+'px';else html.style.removeProperty('font-size');}
+adaptFont();addEventListener('resize',adaptFont);
+
+/* =====================================================
+   LOADER
+===================================================== */
+const MIN=REDUCED?200:1400,MAX=2600,EXIT=REDUCED?0:850;
+const loader=document.getElementById('loader');
+lock();
+animateSpring({tension:200,friction:22},{o:0,y:16},{o:1,y:0},v=>{const m=document.getElementById('loader-mark');m.style.opacity=v.o;m.style.transform=`translateY(${v.y/16}rem)`;});
+tween({duration:MIN-120,delay:120,easing:easeInOutCubic,update:p=>{document.getElementById('loader-fill').style.transform=`scaleX(${p})`;}});
+let done=false;
+function finish(){if(done)return;done=true;unlock();
+  // hero title in
+  playLines(window.__heroInners,{baseDelay:80,stagger:120,duration:1000});
+  if(REDUCED){loader.remove();return;}
+  tween({duration:EXIT,easing:easeInOutCubic,update:p=>{loader.style.transform=`translateY(${-105*p}%)`;},done:()=>loader.remove()});}
+if(document.readyState==='complete')setTimeout(finish,MIN);else addEventListener('load',()=>setTimeout(finish,MIN));
+setTimeout(finish,MAX);
+</script>
+</body>
+</html>
