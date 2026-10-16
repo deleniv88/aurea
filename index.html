@@ -346,7 +346,7 @@ section{position:relative}
 
   <!-- ============ 1 · HERO ============ -->
   <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline preload="auto" src="https://deweb.studio/wp-content/uploads/2026/07/0_Woman_Blonde_1280x720.mp4"></video>
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" src="assets/0_Woman_Blonde_1280x720.mp4"></video>
     <div class="hero-overlay"></div>
 
     <div class="hero-stage">
@@ -371,7 +371,7 @@ section{position:relative}
         <p class="body">At Auréa, exceptional care begins with time. Our specialists pair advanced technique with a calm, unhurried approach — so every appointment feels less like a clinic and more like a considered ritual.</p>
         <button class="pill light" style="border:1px solid var(--hairline)" data-open-modal>Meet the studio <svg><use href="#arr"/></svg></button>
       </div>
-      <div class="phil-img imgbox" data-inview-fade><img src="https://deweb.studio/wp-content/uploads/2026/07/photo-team.webp" alt="The Auréa dental team in the studio" loading="lazy" /></div>
+      <div class="phil-img imgbox" data-inview-fade><img src="assets/photo-team.webp" alt="The Auréa dental team in the studio" loading="lazy" /></div>
     </div>
 
     <div class="stats">
@@ -398,7 +398,7 @@ section{position:relative}
         <h2 class="display twotone" data-on-dark data-lines='["An experience","<span class=\"muted\">unlike any clinic</span>"]' style="margin-top:1.2rem"></h2>
         <div class="exp-feats" id="exp-feats"></div>
       </div>
-      <div class="exp-img imgbox" data-inview-fade><img src="https://deweb.studio/wp-content/uploads/2026/07/interior-stomatology-clinic-dentist-s-office-modern-equipment-instruments-treatment-dental-clinic-close-up-concept-stomatology-1.webp" alt="Interior of the Auréa clinic with modern equipment" loading="lazy" /></div>
+      <div class="exp-img imgbox" data-inview-fade><img src="assets/interior-stomatology-clinic-dentist-s-office-modern-equipment-instruments-treatment-dental-clinic-close-up-concept-stomatology-1.webp" alt="Interior of the Auréa clinic with modern equipment" loading="lazy" /></div>
     </div>
   </section>
 
@@ -434,7 +434,7 @@ section{position:relative}
   <!-- ============ 8 · CONSULTATION + FOOTER ============ -->
   <footer class="foot" id="contact">
     <div class="foot-cta">
-      <div class="fc-img imgbox" data-inview-fade><img src="https://deweb.studio/wp-content/uploads/2026/07/portrait-pleased-smiling-woman-dentist-s-clinic-1-1.webp" alt="Smiling patient at the Auréa consultation room" loading="lazy" /></div>
+      <div class="fc-img imgbox" data-inview-fade><img src="assets/portrait-pleased-smiling-woman-dentist-s-clinic-1-1.webp" alt="Smiling patient at the Auréa consultation room" loading="lazy" /></div>
       <div>
         <span class="eyebrow on-dark"><span class="dot"></span>Get started</span>
         <h2 class="display twotone" data-on-dark data-lines='["From first visit to perfect","<span class=\"muted\">smile, we focus on comfort.</span>"]' style="margin-top:1rem"></h2>
@@ -631,11 +631,11 @@ document.querySelectorAll('a[data-scroll]').forEach(a=>a.addEventListener('click
    TREATMENTS (stacking cards)
 ===================================================== */
 const treatments=[
-  {n:'01',name:'Aesthetic Restoration',d:'Veneers, bonding, and natural-looking restorations designed around your face.',tone:'tone-a',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-restoration.webp',alt:'Patient smiling after an aesthetic restoration'},
-  {n:'02',name:'Dental Implants',d:'Permanent, precision-placed implants that look and feel entirely your own.',tone:'tone-b',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-implants.webp',alt:'Dental implant models with titanium posts'},
-  {n:'03',name:'Clear Aligners',d:'Discreet orthodontics with digitally planned movements from day one.',tone:'tone-c',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-aligners.webp',alt:'Clear aligner being fitted'},
-  {n:'04',name:'Teeth Whitening',d:'Controlled, enamel-safe whitening for a brighter, calibrated result.',tone:'tone-d',src:'https://deweb.studio/wp-content/uploads/2026/07/photo-whitening.webp',alt:'Close-up of a bright, whitened smile'},
-  {n:'05',name:'Hygiene & Prevention',d:'Unhurried cleanings and preventive care that keep every smile ahead.',tone:'tone-e',src:'https://deweb.studio/wp-content/uploads/2026/07/%D1%84%D0%BE%D1%82%D0%BE-6-1.webp',alt:'Smile before and after hygiene treatment'},
+  {n:'01',name:'Aesthetic Restoration',d:'Veneers, bonding, and natural-looking restorations designed around your face.',tone:'tone-a',src:'assets/photo-restoration.webp',alt:'Patient smiling after an aesthetic restoration'},
+  {n:'02',name:'Dental Implants',d:'Permanent, precision-placed implants that look and feel entirely your own.',tone:'tone-b',src:'assets/photo-implants.webp',alt:'Dental implant models with titanium posts'},
+  {n:'03',name:'Clear Aligners',d:'Discreet orthodontics with digitally planned movements from day one.',tone:'tone-c',src:'assets/photo-aligners.webp',alt:'Clear aligner being fitted'},
+  {n:'04',name:'Teeth Whitening',d:'Controlled, enamel-safe whitening for a brighter, calibrated result.',tone:'tone-d',src:'assets/photo-whitening.webp',alt:'Close-up of a bright, whitened smile'},
+  {n:'05',name:'Hygiene & Prevention',d:'Unhurried cleanings and preventive care that keep every smile ahead.',tone:'tone-e',src:'assets/foto-6-1.webp',alt:'Smile before and after hygiene treatment'},
 ];
 const stack=document.getElementById('stack');
 treatments.forEach((t,i)=>{
@@ -684,12 +684,12 @@ feats.forEach(f=>{const d=document.createElement('div');d.className='exp-feat';
    SPECIALISTS
 ===================================================== */
 const specialists=[
-  {n:'Dr. Michael Reynolds',r:'Orthodontist',src:'https://deweb.studio/wp-content/uploads/2026/07/dentist-smiling-thei-clinic-1.webp'},
-  {n:'Dr. Emily Carter',r:'Chief Dental Surgeon',src:'https://deweb.studio/wp-content/uploads/2026/07/Frame-1.webp'},
-  {n:'Dr. Jonathan Brooks',r:'Implantologist',src:'https://deweb.studio/wp-content/uploads/2026/07/male-dentist-looking-camera-1.webp'},
-  {n:'Dr. Sarah Mitchell',r:'Pediatric Dentist',src:'https://deweb.studio/wp-content/uploads/2026/07/Frame-3.webp'},
-  {n:'Dr. Olivia Bennett',r:'Cosmetic Dentist',src:'https://deweb.studio/wp-content/uploads/2026/07/Frame-2.webp'},
-  {n:'Dr. Daniel Fox',r:'Endodontist',src:'https://deweb.studio/wp-content/uploads/2026/07/preparing-utensils-microneedling-procedure-1.webp'},
+  {n:'Dr. Michael Reynolds',r:'Orthodontist',src:'assets/dentist-smiling-thei-clinic-1.webp'},
+  {n:'Dr. Emily Carter',r:'Chief Dental Surgeon',src:'assets/Frame-1.webp'},
+  {n:'Dr. Jonathan Brooks',r:'Implantologist',src:'assets/male-dentist-looking-camera-1.webp'},
+  {n:'Dr. Sarah Mitchell',r:'Pediatric Dentist',src:'assets/Frame-3.webp'},
+  {n:'Dr. Olivia Bennett',r:'Cosmetic Dentist',src:'assets/Frame-2.webp'},
+  {n:'Dr. Daniel Fox',r:'Endodontist',src:'assets/preparing-utensils-microneedling-procedure-1.webp'},
 ];
 const specRow=document.getElementById('spec-row');
 let specStart=0;
@@ -714,10 +714,10 @@ let specRz;addEventListener('resize',()=>{clearTimeout(specRz);specRz=setTimeout
    SMILE GALLERY
 ===================================================== */
 const gallery=[
-  {t:'Full smile makeover',s:'Veneers + whitening',b:'https://deweb.studio/wp-content/uploads/2026/07/Full-smile-makeover-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Full-smile-makeover-after.webp'},
-  {t:'Implant restoration',s:'Single-tooth implant',b:'https://deweb.studio/wp-content/uploads/2026/07/Implant-restoration-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Implant-restoration-after.webp'},
-  {t:'Alignment correction',s:'12-month aligners',b:'https://deweb.studio/wp-content/uploads/2026/07/Alignment-correction-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Alignment-correction-after.webp'},
-  {t:'Whitening result',s:'In-studio session',b:'https://deweb.studio/wp-content/uploads/2026/07/Whitening-result-before.webp',a:'https://deweb.studio/wp-content/uploads/2026/07/Whitening-result-after.webp'},
+  {t:'Full smile makeover',s:'Veneers + whitening',b:'assets/Full-smile-makeover-before.webp',a:'assets/Full-smile-makeover-after.webp'},
+  {t:'Implant restoration',s:'Single-tooth implant',b:'assets/Implant-restoration-before.webp',a:'assets/Implant-restoration-after.webp'},
+  {t:'Alignment correction',s:'12-month aligners',b:'assets/Alignment-correction-before.webp',a:'assets/Alignment-correction-after.webp'},
+  {t:'Whitening result',s:'In-studio session',b:'assets/Whitening-result-before.webp',a:'assets/Whitening-result-after.webp'},
 ];
 const gal=document.getElementById('gal-grid');
 gallery.forEach(g=>{const c=document.createElement('article');c.className='gal-card';
