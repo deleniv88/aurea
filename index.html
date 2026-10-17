@@ -108,7 +108,7 @@ section{position:relative}
 .hd-right{display:flex;align-items:center;gap:1rem;margin-left:auto}
 .hd-phone{display:none}
 @media (min-width:768px){.hd-phone{display:inline-block}}
-.burger{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.28rem;width:3rem;height:3rem;border-radius:var(--r-pill);
+.burger{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.16rem;width:3rem;height:3rem;border-radius:var(--r-pill);
   border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);backdrop-filter:blur(6px);transition:background-color .25s}
 .burger:hover{background:rgba(255,255,255,.3)}
 .burger span{display:block;width:1.1rem;height:.12rem;background:#fff;border-radius:2px}
@@ -123,7 +123,7 @@ section{position:relative}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
 .hero-overlay{position:absolute;inset:0;z-index:-1;
   background:linear-gradient(180deg,rgba(22,30,42,.34) 0%,rgba(22,30,42,.14) 42%,rgba(22,30,42,.60) 100%)}
-.hero-stage{flex:1;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;gap:1.2rem;padding:1.6rem 1.8rem 2rem}
+.hero-stage{flex:1;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;gap:1.2rem;padding:6rem 1.8rem 2rem}
 @media (min-width:1024px){
   .hero-stage{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:1fr auto;align-items:end;padding:2rem 2.6rem 2.6rem;gap:1.6rem;column-gap:2rem}
 }
@@ -592,11 +592,19 @@ function inviewOnce(el,cb,th=0.2){let f=false;
   const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting&&!f){f=true;io.disconnect();cb();}})},{threshold:th});
   io.observe(el);}
 
-/* ---- two-tone stacked headings ---- */
+/* ---- two-tone headings: one continuous sentence (wraps naturally), single reveal ---- */
+function buildSentence(el,lines){
+  el.innerHTML='';
+  const box=document.createElement('span');box.className='clip-box';box.style.paddingBottom='0.12em';
+  const inner=document.createElement('span');inner.className='clip-inner';
+  inner.innerHTML=lines.join(' ');
+  box.appendChild(inner);el.appendChild(box);
+  return [inner];
+}
 document.querySelectorAll('.twotone[data-lines]').forEach(el=>{
   const lines=JSON.parse(el.dataset.lines);
-  const inners=buildLines(el,lines);
-  if(el.id==='modal-title') return; // fired on open
+  const inners=buildSentence(el,lines);
+  if(el.id==='modal-title'){el.__inners=inners;return;} // fired on open
   inviewOnce(el,()=>playLines(inners));
 });
 // hero title
@@ -775,7 +783,7 @@ function applyModal(v){modalPanel.style.opacity=v.o;modalPanel.style.transform=`
 function openModal(){if(modalOpen)return;modalOpen=true;modal.classList.add('open');modal.setAttribute('aria-hidden','false');lock();
   animateSpring({tension:240,friction:30},{o:0},{o:1},v=>modalBg.style.opacity=v.o);
   animateSpring({tension:240,friction:26},{o:0,y:28,s:0.96},{o:1,y:0,s:1},applyModal);
-  const inners=buildLines(modalTitle,JSON.parse(modalTitle.dataset.lines));playLines(inners,{stagger:90,duration:800});
+  const inners=buildSentence(modalTitle,JSON.parse(modalTitle.dataset.lines));playLines(inners,{stagger:90,duration:800});
   setTimeout(()=>document.getElementById('mn')?.focus(),140);}
 function closeModal(){if(!modalOpen)return;modalOpen=false;
   animateSpring({tension:240,friction:30},{o:1},{o:0},v=>modalBg.style.opacity=v.o);
